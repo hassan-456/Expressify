@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{admin/fragments :: head('Content Analysis')}"></head>
+
+<body class="admin-body">
+
+    <div th:replace="~{admin/fragments :: sidebar('analysis')}"></div>
+
+    <div class="admin-main">
+        <header th:replace="~{admin/fragments :: header('Content Analysis')}"></header>
+
+        <div class="admin-content">
+            <p style="color: var(--admin-text-muted); margin-bottom: 30px;">Platform activity and content safety metrics
+            </p>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3><i class="fas fa-shield-alt"></i> Safety Score</h3>
+                    <p class="value" style="color: var(--admin-success);">98%</p>
+                    <p class="trend">Based on report ratio</p>
+                </div>
+
+                <div class="stat-card">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Flagged Content</h3>
+                    <p class="value" style="color: var(--admin-warning);">2%</p>
+                    <p class="trend">Needs review</p>
+                </div>
+            </div>
+
+            <div
+                style="background: var(--admin-card); border: 1px solid var(--admin-border); border-radius: 8px; padding: 30px; margin-top: 20px;">
+                <h3 style="margin-top: 0; margin-bottom: 20px;"><i class="fas fa-chart-line"></i> Activity Trends
+                    (Mockup)</h3>
+                <div
+                    style="height: 300px; display: flex; align-items: flex-end; gap: 10px; padding-top: 20px; border-bottom: 1px solid var(--admin-border);">
+                    <!-- CSS bar chart mockup -->
+                    <div
+                        style="flex-grow: 1; background: var(--admin-accent); height: 40%; border-radius: 4px 4px 0 0; opacity: 0.8;">
+                    </div>
+                    <div
+                        style="flex-grow: 1; background: var(--admin-accent); height: 60%; border-radius: 4px 4px 0 0; opacity: 0.8;">
+                    </div>
+                    <div
+                        style="flex-grow: 1; background: var(--admin-accent); height: 50%; border-radius: 4px 4px 0 0; opacity: 0.8;">
+                    </div>
+                    <div
+                        style="flex-grow: 1; background: var(--admin-accent); height: 80%; border-radius: 4px 4px 0 0; opacity: 0.8;">
+                    </div>
+                    <div
+                        style="flex-grow: 1; background: var(--admin-accent); height: 65%; border-radius: 4px 4px 0 0; opacity: 0.8;">
+                    </div>
+                    <div
+                        style="flex-grow: 1; background: var(--admin-accent); height: 90%; border-radius: 4px 4px 0 0; opacity: 0.8;">
+                    </div>
+                    <div
+                        style="flex-grow: 1; background: var(--admin-accent); height: 75%; border-radius: 4px 4px 0 0; opacity: 0.8;">
+                    </div>
+                </div>
+                <div
+                    style="display: flex; justify-content: space-between; margin-top: 10px; color: var(--admin-text-muted); font-size: 0.8rem;">
+                    <span>Mon</span>
+                    <span>Tue</span>
+                    <span>Wed</span>
+                    <span>Thu</span>
+                    <span>Fri</span>
+                    <span>Sat</span>
+                    <span>Sun</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:with="currentTheme=${currentTheme != null} ? ${currentTheme} : 'light'">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Post - Expressify</title>
+    <link rel="stylesheet" th:href="@{/css/tailwind.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+
+<body th:attr="data-theme=${currentTheme},class=${currentTheme + '-theme'}">
+    <div class="container">
+        <nav class="navbar relative">
+            <div class="nav-brand">
+                <h2><a th:href="@{/home}" style="color:inherit;text-decoration:none;">Expressify</a></h2>
+            </div>
+            <div class="nav-links">
+                <a th:href="@{/home}" class="nav-item"><i class="fas fa-home"></i> Home</a>
+                <a th:href="@{/posts}" class="nav-item active"><i class="fas fa-pen"></i> Create Post</a>
+                <a th:href="@{/explore}" class="nav-item"><i class="fas fa-compass"></i> Explore</a>
+                <a th:href="@{/notifications}" class="nav-item" style="position:relative;">
+                    <i class="fas fa-bell"></i> Notifications
+                    <span th:if="${unreadCount != null && unreadCount > 0}" class="notification-badge"
+                        th:text="${unreadCount}">0</span>
+                </a>
+                <a th:href="@{/profile}" class="nav-item"><i class="fas fa-user"></i> My Profile</a>
+                <a th:href="@{/dm}" class="nav-item"><i class="fas fa-comments"></i> DM</a>
+                <a th:href="@{/friends}" class="nav-item"><i class="fas fa-users"></i> Friends</a>
+                <a th:href="@{/settings}" class="nav-item"><i class="fas fa-cog"></i> Settings</a>
+
+                                <!-- <form th:action="@{/logout}" method="post" class="logout-form">
+    <button type="submit" class="nav-item nav-logout-btn">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
+</form> -->
+<form th:action="@{/logout}" method="post" class="logout-form" style="margin:0; padding:0;">
+    <button type="submit" class="nav-item nav-logout-btn" style="margin:0; padding:0;">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
+</form>
+
+            </div>
+            <div class="nav-toggle"><i class="fas fa-bars"></i></div>
+        </nav>
+        <div class="content">
+            <h2>Create a Post</h2>
+            <p th:if="${message}" class="alert success" th:text="${message}"></p>
+            <form method="post" th:action="@{/posts}" class="post-form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <textarea name="content" class="post-textarea" placeholder="What's on your mind?"
+                        required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Add media (image/video)</label>
+                    <input type="file" name="media" accept="image/*,video/mp4,video/quicktime" />
+                </div>
+                <div class="form-group"
+                    style="padding-top: 10px; border-top: 1px solid var(--border-color); margin-top: 10px;">
+                    <label for="scheduledTime"><i class="fas fa-clock" style="margin-right: 8px;"></i>Schedule Post
+                        (Optional)</label>
+                    <input type="datetime-local" id="scheduledTime" name="scheduledTime" class="post-input"
+                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-secondary); color: var(--text-primary); margin-top: 5px; font-family: inherit; font-size: 0.95rem; box-sizing: border-box;" />
+                    <small style="color: var(--text-secondary); display: block; margin-top: 5px;">Leave empty to post
+                        immediately.</small>
+                </div>
+                <button type="submit" class="post-submit"><i class="fas fa-paper-plane"></i> Post</button>
+            </form>
+        </div>
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <script th:src="@{/js/app.js}"></script>
+    <div th:if="${errorMessage}" id="moderationModal" class="warning-modal-overlay">
+        <div class="warning-modal">
+            <div class="warning-modal-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="warning-modal-title">Warning</div>
+            <div class="warning-modal-message" th:text="${errorMessage}">
+                Please do not post this type of content. Your post has been deleted.
+            </div>
+            <button type="button" class="warning-modal-btn" onclick="closeModerationModal()">OK</button>
+        </div>
+    </div>
+    <script th:if="${errorMessage}">
+        function closeModerationModal() {
+            var m = document.getElementById('moderationModal');
+            if (m) {
+                m.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+
+</html>

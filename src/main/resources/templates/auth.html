@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expressify - Login/Register</title>
+    <link rel="stylesheet" th:href="@{/css/tailwind.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+
+<body class="auth-split-page dark-theme galaxy-page">
+    <div class="auth-split">
+        <div class="auth-split-hero">
+            <div id="galaxy-background-container" class="auth-galaxy-bg"></div>
+            <nav class="auth-split-nav">
+                <a th:href="@{/}" class="auth-split-brand">
+                    <img th:src="@{/assets/logo.png}" alt="Expressify" class="logo" />
+                    <span>Expressify</span>
+                </a>
+            </nav>
+            <div class="auth-hero-copy">
+                <p class="auth-hero-kicker" id="auth-hero-kicker">WELCOME BACK</p>
+                <h1 class="auth-hero-title" id="auth-hero-title">SIGN IN TO YOUR ADVENTURE!</h1>
+                <p class="auth-hero-tagline" id="auth-hero-tagline">Connect, share, and discover with your community.</p>
+            </div>
+        </div>
+
+        <div class="auth-split-panel">
+            <div class="auth-box auth-box-split" data-form="login" id="auth-box">
+                <div class="auth-header">
+                    <p class="auth-panel-kicker" id="auth-panel-kicker">WELCOME BACK</p>
+                    <h2 id="auth-title">LOGIN TO EXPRESSIFY</h2>
+                    <p id="auth-subtitle">Welcome back! Please login to your account</p>
+                </div>
+
+                <div th:if="${error}" class="auth-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Invalid login. Please try again.</span>
+                </div>
+                <div th:if="${banned}" class="auth-error"
+                    style="background: rgba(255, 165, 0, 0.15); border-color: orange;">
+                    <i class="fas fa-ban" style="color: orange;"></i>
+                    <span style="color: orange;">User is temporarily banned. Please contact support.</span>
+                </div>
+                <div th:if="${adminError}" class="auth-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Invalid admin email or password.</span>
+                </div>
+                <div th:if="${errorMessage}" class="auth-error" th:text="${errorMessage}"></div>
+                <div th:if="${message}" class="auth-success" th:text="${message}"></div>
+
+                <form method="post" th:action="@{/auth/login}" class="auth-form" id="auth-form">
+                    <div class="form-group">
+                        <label for="email"><i class="fas fa-envelope"></i></label>
+                        <input type="email" id="email" name="username" required placeholder="yourname@gmail.com" />
+                    </div>
+                    <div class="form-group password-field-wrap">
+                        <label for="password"><i class="fas fa-lock"></i></label>
+                        <input type="password" id="password" name="password" required placeholder="Password"
+                            autocomplete="current-password" />
+                        <button type="button" class="password-toggle-btn" aria-label="Show password" aria-pressed="false">
+                            <i class="fas fa-eye" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <button type="submit" class="auth-submit auth-submit-primary">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>Login</span>
+                    </button>
+                </form>
+
+                <div id="register-fields" style="display:none;">
+                    <form method="post" th:action="@{/auth/register}" class="auth-form" id="register-form">
+                        <div class="form-group">
+                            <label for="reg_username"><i class="fas fa-user"></i></label>
+                            <input type="text" id="reg_username" name="username" required placeholder="Username" />
+                        </div>
+                        <div class="form-group">
+                            <label for="reg_email"><i class="fas fa-envelope"></i></label>
+                            <input type="email" id="reg_email" name="email" required placeholder="Email" />
+                        </div>
+                        <div class="form-group password-field-wrap">
+                            <label for="reg_password"><i class="fas fa-lock"></i></label>
+                            <input type="password" id="reg_password" name="password" required placeholder="Password"
+                                autocomplete="new-password" minlength="9" data-password-strength="true" />
+                            <button type="button" class="password-toggle-btn" aria-label="Show password"
+                                aria-pressed="false">
+                                <i class="fas fa-eye" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <div class="password-strength-block" id="reg_password_meter" aria-live="polite">
+                            <div class="password-strength-track">
+                                <span class="password-strength-fill" id="reg_password_strength_fill"></span>
+                            </div>
+                            <span class="password-strength-text" id="reg_password_strength_text">Password strength</span>
+                        </div>
+                        <ul class="password-rules" id="reg_password_rules">
+                            <li data-rule="len"><i class="fas fa-circle"></i> Longer than 8 characters (9+)</li>
+                            <li data-rule="upper"><i class="fas fa-circle"></i> Uppercase letter</li>
+                            <li data-rule="lower"><i class="fas fa-circle"></i> Lowercase letter</li>
+                            <li data-rule="num"><i class="fas fa-circle"></i> Number</li>
+                            <li data-rule="special"><i class="fas fa-circle"></i> Special character</li>
+                        </ul>
+                        <button type="submit" class="auth-submit auth-submit-primary">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Create account</span>
+                        </button>
+                    </form>
+                </div>
+
+                <div id="admin-fields" style="display:none;">
+                    <form method="post" th:action="@{/admin/login}" class="auth-form">
+                        <div class="form-group">
+                            <label for="admin_email"><i class="fas fa-envelope"></i></label>
+                            <input type="email" id="admin_email" name="email" required placeholder="Admin Email" />
+                        </div>
+                        <div class="form-group password-field-wrap">
+                            <label for="admin_password"><i class="fas fa-lock"></i></label>
+                            <input type="password" id="admin_password" name="password" required placeholder="Password"
+                                autocomplete="current-password" />
+                            <button type="button" class="password-toggle-btn" aria-label="Show password"
+                                aria-pressed="false">
+                                <i class="fas fa-eye" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <button type="submit" class="auth-submit auth-submit-primary">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Admin Login</span>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="auth-switch">
+                    <p id="switch-text">Don't have an account?</p>
+                    <button type="button" onclick="toggleAuth('register')" class="switch-btn" id="switch-btn">Register</button>
+                    <button type="button" onclick="toggleAuth('admin')" class="auth-submit auth-switch-admin" id="switch-admin-btn">
+                        <i class="fas fa-user-shield"></i>
+                        <span id="switch-admin-text">Switch to Admin</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        let currentMode = /*[[ ${admin == true || adminError == true ? 'admin' : (openRegister == true ? 'register' : 'login')} ]]*/ 'login';
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const initialMode = currentMode;
+            currentMode = '';
+            toggleAuth(initialMode);
+        });
+
+        function toggleAuth(targetMode) {
+            const authForm = document.getElementById('auth-form');
+            const registerFields = document.getElementById('register-fields');
+            const adminFields = document.getElementById('admin-fields');
+
+            const authTitle = document.getElementById('auth-title');
+            const authSubtitle = document.getElementById('auth-subtitle');
+            const switchText = document.getElementById('switch-text');
+            const switchBtn = document.getElementById('switch-btn');
+            const switchAdminBtn = document.getElementById('switch-admin-btn');
+            const panelKicker = document.getElementById('auth-panel-kicker');
+            const heroKicker = document.getElementById('auth-hero-kicker');
+            const heroTitle = document.getElementById('auth-hero-title');
+            const heroTag = document.getElementById('auth-hero-tagline');
+
+            if (targetMode === 'login') {
+                currentMode = 'login';
+            } else if (targetMode === 'register' && currentMode === 'login') {
+                currentMode = 'register';
+            } else if (targetMode === 'register' && currentMode === 'register') {
+                currentMode = 'login';
+            } else if (targetMode === 'admin' && currentMode !== 'admin') {
+                currentMode = 'admin';
+            } else if (targetMode === 'admin' && currentMode === 'admin') {
+                currentMode = 'login';
+            } else if (targetMode === 'register' && currentMode === 'admin') {
+                currentMode = 'login';
+            } else if (currentMode === '') {
+                currentMode = targetMode;
+            }
+
+            authForm.style.display = 'none';
+            registerFields.style.display = 'none';
+            adminFields.style.display = 'none';
+
+            if (currentMode === 'register') {
+                registerFields.style.display = 'block';
+                panelKicker.textContent = 'JOIN THE COMMUNITY';
+                authTitle.textContent = 'CREATE YOUR ACCOUNT';
+                authSubtitle.textContent = 'Join Expressify and start sharing today.';
+                heroKicker.textContent = 'GET STARTED';
+                heroTitle.textContent = 'BEGIN YOUR EXPRESSIFY JOURNEY!';
+                heroTag.textContent = 'Create a profile and connect with friends.';
+                switchText.textContent = 'Already have an account?';
+                switchBtn.textContent = 'Login';
+                switchAdminBtn.innerHTML = '<i class="fas fa-user-shield"></i><span id="switch-admin-text" style="margin-left: 8px;">Switch to Admin</span>';
+            } else if (currentMode === 'admin') {
+                adminFields.style.display = 'block';
+                panelKicker.textContent = 'ADMIN ACCESS';
+                authTitle.textContent = 'ADMIN LOGIN';
+                authSubtitle.textContent = 'Enter your administrator credentials';
+                heroKicker.textContent = 'SECURE AREA';
+                heroTitle.textContent = 'ADMINISTRATOR SIGN IN';
+                heroTag.textContent = 'Authorized personnel only.';
+                switchText.textContent = 'Not an admin?';
+                switchBtn.textContent = 'User Login';
+                switchAdminBtn.innerHTML = '<i class="fas fa-user"></i><span id="switch-admin-text" style="margin-left: 8px;">Switch to User</span>';
+            } else {
+                authForm.style.display = 'block';
+                panelKicker.textContent = 'WELCOME BACK';
+                authTitle.textContent = 'LOGIN TO EXPRESSIFY';
+                authSubtitle.textContent = 'Welcome back! Please login to your account';
+                heroKicker.textContent = 'WELCOME BACK';
+                heroTitle.textContent = 'SIGN IN TO YOUR ADVENTURE!';
+                heroTag.textContent = 'Connect, share, and discover with your community.';
+                switchText.textContent = "Don't have an account?";
+                switchBtn.textContent = 'Register';
+                switchAdminBtn.innerHTML = '<i class="fas fa-user-shield"></i><span id="switch-admin-text" style="margin-left: 8px;">Switch to Admin</span>';
+            }
+        }
+    </script>
+    <script type="module">
+        import { initGalaxy } from '/js/galaxy.js';
+        document.addEventListener("DOMContentLoaded", () => {
+            initGalaxy('galaxy-background-container', { soft: true });
+        });
+    </script>
+    <script th:src="@{/js/app.js}"></script>
+</body>
+
+</html>

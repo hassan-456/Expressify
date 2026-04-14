@@ -1,0 +1,8 @@
+#
+# Words in this list will cause a post to be rejected.
+# One word or phrase per line, case-insensitive.
+
+idiot
+bastard
+fool
+

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <title th:text="${title}">Admin Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" th:href="@{/css/tailwind.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+
+<body>
+
+    <div th:fragment="sidebar(activeMenu)" class="admin-sidebar">
+        <div class="admin-brand">
+            <img th:src="@{/assets/logo.png}" alt="Logo">
+            <div>
+                <h2>Expressify</h2>
+                <span>Admin Panel</span>
+            </div>
+        </div>
+
+        <div class="admin-nav">
+            <a th:href="@{/admin/dashboard}" th:classappend="${activeMenu == 'dashboard' ? 'active' : ''}">
+                <i class="fas fa-chart-pie"></i> Dashboard
+            </a>
+            <a th:href="@{/admin/users}" th:classappend="${activeMenu == 'users' ? 'active' : ''}">
+                <i class="fas fa-users"></i> User Management
+            </a>
+            <a th:href="@{/admin/posts}" th:classappend="${activeMenu == 'posts' ? 'active' : ''}">
+                <i class="fas fa-file-alt"></i> Post Management
+            </a>
+            <a th:href="@{/admin/content-analysis}" th:classappend="${activeMenu == 'analysis' ? 'active' : ''}">
+                <i class="fas fa-chart-line"></i> Content Analysis
+            </a>
+
+            <div style="flex-grow: 1;"></div>
+
+            <a th:href="@{/home}">
+                <i class="fas fa-sign-out-alt fa-flip-horizontal"></i> Back to Site
+            </a>
+            <a th:href="@{/admin/logout}">
+                <i class="fas fa-power-off"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <header th:fragment="header(title)" class="admin-header">
+        <h1 th:text="${title}">Dashboard</h1>
+        <div class="admin-user">
+            <i class="fas fa-bell"></i>
+            <span><i class="fas fa-user-circle"></i> Welcome, Admin</span>
+        </div>
+    </header>
+
+</body>
+
+</html>

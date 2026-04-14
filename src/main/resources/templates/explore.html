@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:with="currentTheme=${currentTheme != null} ? ${currentTheme} : 'light'">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Explore - Expressify</title>
+    <link rel="stylesheet" th:href="@{/css/tailwind.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+
+<body th:attr="data-theme=${currentTheme},class=${currentTheme + '-theme'}">
+    <div class="container">
+        <nav class="navbar relative">
+            <div class="nav-brand">
+                <h2><a th:href="@{/home}" style="color:inherit;text-decoration:none;">Expressify</a></h2>
+            </div>
+            <div class="nav-links">
+                <a th:href="@{/home}" class="nav-item"><i class="fas fa-home"></i> Home</a>
+                <a th:href="@{/posts}" class="nav-item"><i class="fas fa-pen"></i> Create Post</a>
+                <a th:href="@{/explore}" class="nav-item active"><i class="fas fa-compass"></i> Explore</a>
+                <a th:href="@{/notifications}" class="nav-item" style="position:relative;">
+                    <i class="fas fa-bell"></i> Notifications
+                    <span th:if="${unreadCount != null && unreadCount > 0}" class="notification-badge"
+                        th:text="${unreadCount}">0</span>
+                </a>
+                <a th:href="@{/profile}" class="nav-item"><i class="fas fa-user"></i> My Profile</a>
+                <a th:href="@{/dm}" class="nav-item"><i class="fas fa-comments"></i> DM</a>
+                <a th:href="@{/friends}" class="nav-item"><i class="fas fa-users"></i> Friends</a>
+                <a th:href="@{/settings}" class="nav-item"><i class="fas fa-cog"></i> Settings</a>
+                <!-- <form th:action="@{/logout}" method="post" class="logout-form">
+    <button type="submit" class="nav-item nav-logout-btn">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
+</form> -->
+<form th:action="@{/logout}" method="post" class="logout-form" style="margin:0; padding:0;">
+    <button type="submit" class="nav-item nav-logout-btn" style="margin:0; padding:0;">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
+</form>
+
+            </div>
+            <div class="nav-toggle"><i class="fas fa-bars"></i></div>
+        </nav>
+        <div class="content">
+            <div class="explore-header-row">
+                <h2><i class="fas fa-compass"></i> Explore</h2>
+            </div>
+            <form th:action="@{/explore}" method="get" class="explore-find-form">
+                <i class="fas fa-search"></i>
+                <input type="text" name="q" placeholder="Find people by username..." th:value="${searchQuery}" />
+                <button type="submit" class="primary-button"><i class="fas fa-arrow-right"></i> Find People</button>
+            </form>
+
+            <div th:if="${userResults != null}">
+                <h3 style="margin-bottom:10px;"><i class="fas fa-users"></i> People</h3>
+                <div class="users-grid">
+                    <th:block th:each="uw : ${userResults}">
+                        <div class="user-card">
+                            <img th:with="avatarUrl=${(uw.user.profilePicture == null or #strings.isEmpty(uw.user.profilePicture))
+                                ? '/assets/logo.png'
+                                : (#strings.startsWith(uw.user.profilePicture, '/') ? uw.user.profilePicture : '/' + uw.user.profilePicture)}"
+                                th:src="@{${avatarUrl}}" th:alt="${uw.user.username}" class="user-avatar" />
+                            <div class="user-info">
+                                <h4 th:text="${uw.user.username}">Username</h4>
+                                <p th:if="${uw.user.bio}" class="user-bio" th:text="${uw.user.bio}">Bio</p>
+                                <div class="friend-actions">
+                                    <a class="friend-btn" th:href="@{/profile(id=${uw.user.id})}"
+                                        style="text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+                                        <i class="fas fa-user"></i> View Profile
+                                    </a>
+                                    <button type="button" class="friend-btn add-friend"
+                                        th:if="${uw.status.name() == 'NONE'}" th:attr="data-user-id=${uw.user.id}"
+                                        onclick="handleFriendRequest(this, 'send')">
+                                        <i class="fas fa-user-plus"></i> Add Friend
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </th:block>
+                    <p th:if="${#lists.isEmpty(userResults)}" class="explore-welcome">No users found.</p>
+                </div>
+            </div>
+
+
+            <th:block th:each="post : ${posts}">
+                <div class="post" th:attr="data-post-id=${post.id},data-user-id=${post.userId}">
+                    <div class="post-header">
+                        <a th:href="@{/profile(id=${post.userId})}" class="post-user">
+                            <img th:with="avatarUrl=${(post.profilePicture == null or #strings.isEmpty(post.profilePicture))
+                                ? '/assets/logo.png'
+                                : (#strings.startsWith(post.profilePicture, '/') ? post.profilePicture : '/' + post.profilePicture)}"
+                                th:src="@{${avatarUrl}}" th:alt="${post.username}" class="post-avatar" />
+                            <div class="post-user-info">
+                                <strong th:text="${post.username}">User</strong>
+                                <span class="post-date"
+                                    th:text="${#temporals.format(post.createdAt, 'MMM dd, yyyy')}">Date</span>
+                            </div>
+                        </a>
+                        <div class="post-header-actions">
+                            <button type="button" class="report-post-btn" th:attr="data-post-id=${post.id}"
+                                onclick="openReportMenu(this)">
+                                <i class="fas fa-flag"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="post-content" th:text="${post.content}">Content</p>
+                    <div th:if="${post.filePath}" class="post-media">
+                        <img th:if="${post.filePath}"
+                            th:src="${post.filePath != null and #strings.startsWith(post.filePath, '/')} ? @{${post.filePath}} : @{/${post.filePath}}"
+                            alt="Post" class="post-image" />
+                    </div>
+                    <div class="post-actions">
+                        <button type="button" class="post-action like-btn" th:classappend="${post.userLiked} ? 'liked'"
+                            th:attr="data-post-id=${post.id}" onclick="likePost(this)">
+                            <i th:class="${post.userLiked} ? 'fas fa-heart' : 'far fa-heart'"></i>
+                            <span class="like-count" th:text="${post.likeCount}">0</span>
+                        </button>
+                        <button type="button" class="post-action comment-btn" th:attr="data-post-id=${post.id}"
+                            onclick="toggleComments(this)">
+                            <i class="far fa-comment"></i>
+                            <span class="comment-count" th:text="${post.commentCount}">0</span>
+                        </button>
+                    </div>
+                </div>
+            </th:block>
+            <p th:if="${#lists.isEmpty(posts)}" class="explore-welcome">No posts to explore yet.</p>
+        </div>
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <script th:src="@{/js/app.js}"></script>
+    <script>
+        function handleFriendRequest(btn, action) {
+            const userId = btn.getAttribute('data-user-id');
+            fetch('/api/friend_request?user_id=' + userId + '&action=' + action, {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                credentials: 'same-origin'
+            })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success === 'true') {
+                        location.reload();
+                    } else {
+                        alert(data.message || 'Friend request failed');
+                    }
+                })
+                .catch(() => alert('Friend request failed'));
+        }
+    </script>
+</body>
+
+</html>
