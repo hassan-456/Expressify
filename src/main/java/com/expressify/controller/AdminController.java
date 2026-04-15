@@ -119,7 +119,7 @@ public class AdminController {
 
                 // 2. Delete reports targeting this user's posts
                 entityManager.createNativeQuery(
-                                "DELETE FROM reports WHERE content_type = 'post' AND content_id IN (SELECT id FROM posts WHERE user_id = ?)")
+                                "DELETE FROM report WHERE content_type = 'post' AND content_id IN (SELECT id FROM posts WHERE user_id = ?)")
                                 .setParameter(1, id).executeUpdate();
 
                 // 3. Delete comment_likes on comments made by this user, or by this user
